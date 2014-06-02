@@ -1,8 +1,9 @@
-package ru.footmade.asteroids;
+package ru.footmade.asteroids.entity;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
 
 import com.badlogic.gdx.math.Vector2;
 

@@ -1,4 +1,4 @@
-package ru.footmade.asteroids;
+package ru.footmade.asteroids.entity;
 
 import java.util.Random;
 

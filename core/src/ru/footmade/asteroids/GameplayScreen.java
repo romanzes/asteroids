@@ -1,5 +1,10 @@
 package ru.footmade.asteroids;
 
+import ru.footmade.asteroids.entity.Asteroid;
+import ru.footmade.asteroids.entity.Ship;
+import ru.footmade.asteroids.entity.Space;
+import ru.footmade.asteroids.util.GLCleaner;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;

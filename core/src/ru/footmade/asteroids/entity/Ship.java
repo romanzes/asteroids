@@ -1,4 +1,4 @@
-package ru.footmade.asteroids;
+package ru.footmade.asteroids.entity;
 
 import com.badlogic.gdx.math.Polygon;
 
