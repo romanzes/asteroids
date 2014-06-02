@@ -13,6 +13,7 @@ public class GameplayScreen extends ScreenAdapter {
 	private static final int BACKGROUND_COLOR = 0xff000000;
 	private static final Color SHIP_COLOR = Color.BLUE;
 	private static final Color STAR_COLOR = Color.WHITE;
+	private static final Color ASTEROID_COLOR = Color.ORANGE;
 	
 	private ShapeRenderer renderer;
 	
@@ -38,6 +39,7 @@ public class GameplayScreen extends ScreenAdapter {
 		renderSpace();
 		renderer.end();
 		renderer.begin(ShapeType.Line);
+		renderAsteroids();
 		renderShip();
 		renderer.end();
 	}
@@ -49,6 +51,13 @@ public class GameplayScreen extends ScreenAdapter {
 		}
 	}
 	
+	private void renderAsteroids() {
+		renderer.setColor(ASTEROID_COLOR);
+		for (Asteroid asteroid: space.asteroids) {
+			renderer.polygon(asteroid.getTransformedVertices());
+		}
+	}
+	
 	private void renderShip() {
 		renderer.setColor(SHIP_COLOR);
 		renderer.polygon(space.ship.getTransformedVertices());
@@ -56,7 +65,8 @@ public class GameplayScreen extends ScreenAdapter {
 	
 	private void processInput(float delta) {
 		float angularVelocity = -Ship.MAX_ANGULAR_VELOCITY * Gdx.input.getAccelerometerX() / 10;
-		space.rotateShip(angularVelocity * delta);
+		if (Math.abs(Ship.MIN_ANGULAR_VELOCITY) >= Ship.MIN_ANGULAR_VELOCITY)
+			space.rotateShip(angularVelocity * delta);
 	}
 	
 	@Override

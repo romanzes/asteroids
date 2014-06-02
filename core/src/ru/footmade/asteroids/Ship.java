@@ -3,13 +3,14 @@ package ru.footmade.asteroids;
 import com.badlogic.gdx.math.Polygon;
 
 public class Ship extends Polygon {
-	public static final float MAX_ANGULAR_VELOCITY = (float) (Math.PI / 2);
+	public static final float MAX_ANGULAR_VELOCITY = (float) (Math.PI);
+	public static final float MIN_ANGULAR_VELOCITY = (float) (Math.PI / 8);
 	
 	// parameters are relative to viewport width
 	private static final float SHIP_WIDTH = 0.1f;
 	private static final float SHIP_HEIGHT = 0.15f;
 	private static final float ACCELERATION = 0.2f;
-	private static final float TOP_SPEED = 0.3f;
+	private static final float TOP_SPEED = 0.4f;
 	
 	public float speed;
 	public float acceleration;
