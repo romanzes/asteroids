@@ -15,6 +15,7 @@ public class Space {
 	private final Random random = new Random();
 	
 	private int viewportWidth, viewportHeight;
+	public float scale;
 	private float screenRadius;
 	private float activeSpaceRadius; // objects are destroyed outside this radius
 	
@@ -26,9 +27,10 @@ public class Space {
 	public Space(int viewportWidth, int viewportHeight) {
 		this.viewportWidth = viewportWidth;
 		this.viewportHeight = viewportHeight;
+		scale = Math.min(viewportWidth, viewportHeight);
 		screenRadius = Vector2.len(viewportWidth, viewportHeight) / 2;
 		activeSpaceRadius = screenRadius * ACTIVE_SPACE_RELATIVE_RADIUS;
-		ship = new Ship(viewportWidth);
+		ship = new Ship(scale);
 		createStars();
 		manageAsteroids();
 	}
@@ -65,14 +67,14 @@ public class Space {
 				float y = (float) Math.sin(angle) * radius;
 				satisfy = true;
 				for (Asteroid asteroid : asteroids) {
-					if (Vector2.dst(x, y, asteroid.getX(), asteroid.getY()) < viewportWidth * Asteroid.RADIUS * 2) {
+					if (Vector2.dst(x, y, asteroid.getX(), asteroid.getY()) < scale * Asteroid.RADIUS * 2) {
 						satisfy = false;
 						break;
 					}
 				}
 				if (satisfy) {
 					float velocityAngle = (float) Math.atan2(x, y);
-					Asteroid asteroid = new Asteroid(viewportWidth, new Vector2(x, y), velocityAngle);
+					Asteroid asteroid = new Asteroid(scale, new Vector2(x, y), velocityAngle);
 					asteroids.add(asteroid);
 				} else
 					tries++;
@@ -113,7 +115,7 @@ public class Space {
 	}
 	
 	public void fire() {
-		bullets.add(new Bullet(viewportWidth, new Vector2(), 0));
+		bullets.add(new Bullet(scale, new Vector2(), 0));
 	}
 	
 	private void move(Vector2 distance) {

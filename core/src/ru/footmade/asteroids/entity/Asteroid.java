@@ -8,7 +8,6 @@ import com.badlogic.gdx.math.Vector2;
 public class Asteroid extends Polygon {
 	private static final float MAX_ANGULAR_VELOCITY = (float) Math.PI;
 	
-	// parameters are relative to viewport width
 	public static final float RADIUS = 0.15f;
 	private static final float MAX_VELOCITY = 0.4f;
 	

@@ -74,8 +74,8 @@ public class GameplayScreen extends ScreenAdapter {
 	private void renderBullets() {
 		renderer.setColor(BULLET_COLOR);
 		for (Bullet bullet : space.bullets) {
-			float bulletLength = scrW * Bullet.LENGTH;
-			float bulletWidth = scrW * Bullet.WIDTH;
+			float bulletLength = space.scale * Bullet.LENGTH;
+			float bulletWidth = space.scale * Bullet.WIDTH;
 			Vector2 bulletEnd = new Vector2(bullet).mulAdd(bullet.velocity, bulletLength / bullet.velocity.len());
 			renderer.rectLine(bullet, bulletEnd, bulletWidth);
 		}
