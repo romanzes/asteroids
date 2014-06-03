@@ -1,6 +1,7 @@
 package ru.footmade.asteroids;
 
 import ru.footmade.asteroids.entity.Asteroid;
+import ru.footmade.asteroids.entity.Bullet;
 import ru.footmade.asteroids.entity.Ship;
 import ru.footmade.asteroids.entity.Space;
 import ru.footmade.asteroids.util.GLCleaner;
@@ -19,6 +20,7 @@ public class GameplayScreen extends ScreenAdapter {
 	private static final Color SHIP_COLOR = Color.BLUE;
 	private static final Color STAR_COLOR = Color.WHITE;
 	private static final Color ASTEROID_COLOR = Color.ORANGE;
+	private static final Color BULLET_COLOR = Color.RED;
 	
 	private ShapeRenderer renderer;
 	
@@ -46,6 +48,7 @@ public class GameplayScreen extends ScreenAdapter {
 		renderer.begin(ShapeType.Line);
 		renderAsteroids();
 		renderShip();
+		renderBullets();
 		renderer.end();
 	}
 	
@@ -68,10 +71,23 @@ public class GameplayScreen extends ScreenAdapter {
 		renderer.polygon(space.ship.getTransformedVertices());
 	}
 	
+	private void renderBullets() {
+		renderer.setColor(BULLET_COLOR);
+		for (Bullet bullet : space.bullets) {
+			float bulletLength = scrW * Bullet.LENGTH;
+			float bulletWidth = scrW * Bullet.WIDTH;
+			Vector2 bulletEnd = new Vector2(bullet).mulAdd(bullet.velocity, bulletLength / bullet.velocity.len());
+			renderer.rectLine(bullet, bulletEnd, bulletWidth);
+		}
+	}
+	
 	private void processInput(float delta) {
 		float angularVelocity = -Ship.MAX_ANGULAR_VELOCITY * Gdx.input.getAccelerometerX() / 10;
-		if (Math.abs(Ship.MIN_ANGULAR_VELOCITY) >= Ship.MIN_ANGULAR_VELOCITY)
+		if (Math.abs(angularVelocity) >= Ship.MIN_ANGULAR_VELOCITY)
 			space.rotateShip(angularVelocity * delta);
+		if (Gdx.input.justTouched()) {
+			space.fire();
+		}
 	}
 	
 	@Override

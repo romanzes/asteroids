@@ -17,9 +17,9 @@ public class Asteroid extends Polygon {
 	public float angularVelocity;
 	public Vector2 velocity;
 	
-	private static float[] getVertices(int viewportWidth, int viewportHieght) {
+	private static float[] getVertices(float scale) {
 		float angularStep = (float) (Math.PI * 2 / VERTEX_COUNT);
-		float radius = viewportWidth * RADIUS;
+		float radius = scale * RADIUS;
 		Random random = new Random();
 		float[] vertices = new float[VERTEX_COUNT * 2];
 		for (int i = 0; i < VERTEX_COUNT; i++) {
@@ -31,12 +31,12 @@ public class Asteroid extends Polygon {
 		return vertices;
 	}
 	
-	public Asteroid(int viewportWidth, int viewportHeight, Vector2 position, float velocityAngle) {
-		super(getVertices(viewportWidth, viewportHeight));
+	public Asteroid(float scale, Vector2 position, float velocityAngle) {
+		super(getVertices(scale));
 		setPosition(position.x, position.y);
 		Random random = new Random();
 		angularVelocity = random.nextFloat() * MAX_ANGULAR_VELOCITY * 2 - MAX_ANGULAR_VELOCITY;
-		float velocityMagnitude = random.nextFloat() * viewportWidth * MAX_VELOCITY;
+		float velocityMagnitude = random.nextFloat() * scale * MAX_VELOCITY;
 		velocity = new Vector2((float) Math.cos(velocityMagnitude) * velocityMagnitude,
 				(float) Math.sin(velocityAngle) * velocityMagnitude);
 	}

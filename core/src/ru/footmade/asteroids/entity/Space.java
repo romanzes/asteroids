@@ -21,13 +21,14 @@ public class Space {
 	public Ship ship;
 	public Vector2[] stars;
 	public List<Asteroid> asteroids = new ArrayList<Asteroid>();
+	public List<Bullet> bullets = new ArrayList<Bullet>();
 	
 	public Space(int viewportWidth, int viewportHeight) {
 		this.viewportWidth = viewportWidth;
 		this.viewportHeight = viewportHeight;
 		screenRadius = Vector2.len(viewportWidth, viewportHeight) / 2;
 		activeSpaceRadius = screenRadius * ACTIVE_SPACE_RELATIVE_RADIUS;
-		ship = new Ship(viewportWidth, viewportHeight);
+		ship = new Ship(viewportWidth);
 		createStars();
 		manageAsteroids();
 	}
@@ -71,7 +72,7 @@ public class Space {
 				}
 				if (satisfy) {
 					float velocityAngle = (float) Math.atan2(x, y);
-					Asteroid asteroid = new Asteroid(viewportWidth, viewportHeight, new Vector2(x, y), velocityAngle);
+					Asteroid asteroid = new Asteroid(viewportWidth, new Vector2(x, y), velocityAngle);
 					asteroids.add(asteroid);
 				} else
 					tries++;
@@ -85,6 +86,9 @@ public class Space {
 		ship.update(interval);
 		for (Asteroid asteroid : asteroids) {
 			asteroid.update(interval);
+		}
+		for (Bullet bullet : bullets) {
+			bullet.update(interval);
 		}
 		float distance = ship.speed * interval;
 		move(new Vector2(0, distance));
@@ -102,6 +106,14 @@ public class Space {
 			asteroid.rotate(dAngle * 180 / (float) Math.PI);
 			asteroid.velocity.rotateRad(dAngle);
 		}
+		for (Bullet bullet : bullets) {
+			bullet.rotateRad(dAngle);
+			bullet.velocity.rotateRad(dAngle);
+		}
+	}
+	
+	public void fire() {
+		bullets.add(new Bullet(viewportWidth, new Vector2(), 0));
 	}
 	
 	private void move(Vector2 distance) {
@@ -118,6 +130,12 @@ public class Space {
 		}
 		for (Asteroid asteroid : asteroids) {
 			asteroid.setPosition(asteroid.getX() - distance.x, asteroid.getY() - distance.y);
+		}
+		for (int i = 0; i < bullets.size(); i++) {
+			Bullet bullet = bullets.get(i);
+			bullet.sub(distance);
+			if (bullet.len() > activeSpaceRadius)
+				bullets.remove(i--);
 		}
 	}
 }
