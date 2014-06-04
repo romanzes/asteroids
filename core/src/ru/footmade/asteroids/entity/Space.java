@@ -1,9 +1,9 @@
 package ru.footmade.asteroids.entity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-
 
 import com.badlogic.gdx.math.Vector2;
 
@@ -23,6 +23,7 @@ public class Space {
 	public Vector2[] stars;
 	public List<Asteroid> asteroids = new ArrayList<Asteroid>();
 	public List<Bullet> bullets = new ArrayList<Bullet>();
+	public int largeAsteroidsCount;
 	
 	public Space(int viewportWidth, int viewportHeight) {
 		this.viewportWidth = viewportWidth;
@@ -55,9 +56,11 @@ public class Space {
 			Asteroid asteroid = asteroids.get(i);
 			if (Vector2.len(asteroid.getX(), asteroid.getY()) > activeSpaceRadius) {
 				asteroids.remove(i--);
+				if (asteroid.size == Asteroid.SIZE_LARGE)
+					largeAsteroidsCount--;
 			}
 		}
-		while (asteroids.size() < ASTEROID_COUNT) {
+		while (largeAsteroidsCount < ASTEROID_COUNT) {
 			boolean satisfy = false;
 			int tries = 0;
 			while (!satisfy && tries < 10) {
@@ -76,6 +79,7 @@ public class Space {
 					float velocityAngle = (float) Math.atan2(x, y);
 					Asteroid asteroid = new Asteroid(scale, new Vector2(x, y), velocityAngle);
 					asteroids.add(asteroid);
+					largeAsteroidsCount++;
 				} else
 					tries++;
 			}
@@ -89,8 +93,24 @@ public class Space {
 		for (Asteroid asteroid : asteroids) {
 			asteroid.update(interval);
 		}
-		for (Bullet bullet : bullets) {
+		for (int i = 0; i < bullets.size(); i++) {
+			Bullet bullet = bullets.get(i);
 			bullet.update(interval);
+			for (Asteroid asteroid : asteroids) {
+				if (asteroid.contains(bullet.x, bullet.y)) {
+					bullets.remove(i--);
+					asteroids.remove(asteroid);
+					switch (asteroid.size) {
+					case Asteroid.SIZE_SMALL:
+						break;
+					case Asteroid.SIZE_LARGE:
+						largeAsteroidsCount--;
+						asteroids.addAll(Arrays.asList(asteroid.split()));
+						break;
+					}
+					break;
+				}
+			}
 		}
 		float distance = ship.speed * interval;
 		move(new Vector2(0, distance));
