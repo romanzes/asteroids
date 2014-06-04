@@ -101,7 +101,7 @@ public class Space {
 		if (ship.state == Ship.STATE_ALIVE) {
 			ship.update(interval);
 			for (Asteroid asteroid : asteroids) {
-				if (Intersector.overlapConvexPolygons(asteroid, ship)) {
+				if (Intersector.overlapConvexPolygons(asteroid.getOnlyVertices(), ship.getOnlyVertices(), null)) {
 					ship.state = Ship.STATE_DESTROYED;
 					MyGdxGame.gameOver();
 					break;

@@ -2,10 +2,11 @@ package ru.footmade.asteroids.entity;
 
 import java.util.Random;
 
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 
-public class Asteroid extends Polygon {
+public class Asteroid extends MyPolygonSprite {
+	private static final int COLOR = 0xFF6A00FF;
+	
 	private static final float MAX_ANGULAR_VELOCITY = (float) Math.PI;
 	
 	public static final float RADIUS = 0.15f;
@@ -38,14 +39,14 @@ public class Asteroid extends Polygon {
 		return vertices;
 	}
 	
-	private Asteroid() {
-		super();
+	private Asteroid(float[] vertices) {
+		super(COLOR, vertices);
 		velocity = new Vector2();
 		size = SIZE_SMALL;
 	}
 	
 	public Asteroid(float scale, Vector2 position, float velocityAngle) {
-		super(getVertices(scale));
+		super(COLOR, getVertices(scale));
 		this.scale = scale;
 		setPosition(position.x, position.y);
 		Random random = new Random();
@@ -62,13 +63,12 @@ public class Asteroid extends Polygon {
 	}
 	
 	public Asteroid[] split() {
-		float[] vertices = getTransformedVertices();
+		float[] vertices = getOnlyVertices();
 		Asteroid[] result = new Asteroid[VERTEX_COUNT];
 		for (int i = VERTEX_COUNT - 1, j = 0; j < VERTEX_COUNT; i = j++) {
 			float[] newVertices = { 0, 0, vertices[i * 2] - getX(), vertices[i * 2 + 1] - getY(),
 					vertices[j * 2] - getX(), vertices[j * 2 + 1] - getY() };
-			result[j] = new Asteroid();
-			result[j].setVertices(newVertices);
+			result[j] = new Asteroid(newVertices);
 			result[j].setOrigin(0, 0);
 			result[j].setPosition(getX(), getY());
 			Vector2 newVelocity = new Vector2(velocity)

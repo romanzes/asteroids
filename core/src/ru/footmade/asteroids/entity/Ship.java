@@ -1,8 +1,8 @@
 package ru.footmade.asteroids.entity;
 
-import com.badlogic.gdx.math.Polygon;
-
-public class Ship extends Polygon {
+public class Ship extends MyPolygonSprite {
+	private static final int COLOR = 0x0000FFFF;
+	
 	public static final float MAX_ANGULAR_VELOCITY = (float) (Math.PI);
 	public static final float MIN_ANGULAR_VELOCITY = (float) (Math.PI / 6);
 	
@@ -27,7 +27,8 @@ public class Ship extends Polygon {
 	}
 	
 	public Ship(float scale) {
-		super(getVertices(scale));
+		super(COLOR, getVertices(scale));
+		
 		acceleration = scale * ACCELERATION;
 		topSpeed = scale * TOP_SPEED;
 	}

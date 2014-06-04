@@ -10,6 +10,7 @@ import ru.footmade.asteroids.util.GLCleaner;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
@@ -19,12 +20,11 @@ public class GameplayRenderer implements Disposable {
 	private int scrW, scrH;
 	
 	private static final int BACKGROUND_COLOR = 0xff000000;
-	private static final Color SHIP_COLOR = Color.BLUE;
 	private static final Color STAR_COLOR = Color.WHITE;
-	private static final Color ASTEROID_COLOR = Color.ORANGE;
 	private static final Color BULLET_COLOR = Color.RED;
 	
 	private ShapeRenderer renderer;
+	private PolygonSpriteBatch batch;
 	
 	public GameplayRenderer() {
 		scrW = Gdx.graphics.getWidth();
@@ -32,6 +32,8 @@ public class GameplayRenderer implements Disposable {
 		
 		renderer = new ShapeRenderer();
 		renderer.translate(scrW / 2, scrH / 2, 0);
+		batch = new PolygonSpriteBatch();
+		batch.getTransformMatrix().translate(scrW / 2, scrH / 2, 0);
 	}
 	
 	public void render(Space space) {
@@ -39,9 +41,12 @@ public class GameplayRenderer implements Disposable {
 		renderer.begin(ShapeType.Point);
 		renderSpace(space);
 		renderer.end();
-		renderer.begin(ShapeType.Line);
-		renderAsteroids(space.asteroids);
+		batch.begin();
 		renderShip(space.ship);
+		batch.flush();
+		renderAsteroids(space.asteroids);
+		batch.end();
+		renderer.begin(ShapeType.Line);
 		renderBullets(space.bullets, space.scale);
 		renderer.end();
 	}
@@ -54,17 +59,16 @@ public class GameplayRenderer implements Disposable {
 	}
 	
 	private void renderAsteroids(List<Asteroid> asteroids) {
-		renderer.setColor(ASTEROID_COLOR);
 		for (Asteroid asteroid: asteroids) {
-			renderer.polygon(asteroid.getTransformedVertices());
+			asteroid.draw(batch);
+			batch.flush();
 		}
 	}
 	
 	private void renderShip(Ship ship) {
 		if (ship.state != Ship.STATE_ALIVE)
 			return;
-		renderer.setColor(SHIP_COLOR);
-		renderer.polygon(ship.getTransformedVertices());
+		ship.draw(batch);
 	}
 	
 	private void renderBullets(List<Bullet> bullets, float scale) {
@@ -79,6 +83,7 @@ public class GameplayRenderer implements Disposable {
 
 	@Override
 	public void dispose() {
+		batch.dispose();
 		renderer.dispose();
 	}
 }
