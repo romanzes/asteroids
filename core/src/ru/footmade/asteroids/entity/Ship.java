@@ -15,6 +15,10 @@ public class Ship extends Polygon {
 	public float acceleration;
 	public float topSpeed;
 	
+	public static final int STATE_ALIVE = 0;
+	public static final int STATE_DESTROYED = 1;
+	public int state = STATE_ALIVE;
+	
 	private static float[] getVertices(float scale) {
 		float shipWidth = scale * SHIP_WIDTH;
 		float shipHeight = scale * SHIP_HEIGHT;

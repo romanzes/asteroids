@@ -5,6 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import ru.footmade.asteroids.MyGdxGame;
+
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 
 public class Space {
@@ -34,6 +37,12 @@ public class Space {
 		ship = new Ship(scale);
 		createStars();
 		manageAsteroids();
+	}
+	
+	public void reset() {
+		ship = new Ship(scale);
+		asteroids.clear();
+		largeAsteroidsCount = 0;
 	}
 	
 	private void createStars() {
@@ -89,7 +98,16 @@ public class Space {
 	}
 	
 	public void update(float interval) {
-		ship.update(interval);
+		if (ship.state == Ship.STATE_ALIVE) {
+			ship.update(interval);
+			for (Asteroid asteroid : asteroids) {
+				if (Intersector.overlapConvexPolygons(asteroid, ship)) {
+					ship.state = Ship.STATE_DESTROYED;
+					MyGdxGame.gameOver();
+					break;
+				}
+			}
+		}
 		for (Asteroid asteroid : asteroids) {
 			asteroid.update(interval);
 		}
