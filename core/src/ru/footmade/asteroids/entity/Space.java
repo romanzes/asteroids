@@ -135,14 +135,16 @@ public class Space {
 		manageAsteroids();
 	}
 	
+	private final Vector2 rotationCacheVector = new Vector2();
+	
 	public void rotateShip(float dAngle) {
 		for (Vector2 star : stars) {
 			star.rotateRad(dAngle);
 		}
 		for (Asteroid asteroid : asteroids) {
-			Vector2 position = new Vector2(asteroid.getX(), asteroid.getY());
-			position.rotateRad(dAngle);
-			asteroid.setPosition(position.x, position.y);
+			rotationCacheVector.set(asteroid.getX(), asteroid.getY());
+			rotationCacheVector.rotateRad(dAngle);
+			asteroid.setPosition(rotationCacheVector.x, rotationCacheVector.y);
 			asteroid.rotate(dAngle * 180 / (float) Math.PI);
 			asteroid.velocity.rotateRad(dAngle);
 		}
